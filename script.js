@@ -1,67 +1,124 @@
-let display=document.getElementById("display");
+const questions=[
 
-function append(value){
-display.value+=value;
+{
+question:"HTML stands for?",
+answers:[
+{text:"Hyper Text Markup Language",correct:true},
+{text:"High Text Machine Language",correct:false},
+{text:"Hyper Tool Multi Language",correct:false},
+{text:"Home Text Markup Language",correct:false}
+]
+},
+
+{
+question:"Which language is used for styling webpages?",
+answers:[
+{text:"HTML",correct:false},
+{text:"CSS",correct:true},
+{text:"Python",correct:false},
+{text:"Java",correct:false}
+]
+},
+
+{
+question:"Which is used for webpage interaction?",
+answers:[
+{text:"JavaScript",correct:true},
+{text:"C++",correct:false},
+{text:"SQL",correct:false},
+{text:"Bootstrap",correct:false}
+]
 }
 
-function clearDisplay(){
-display.value="";
-}
+];
 
-function deleteLast(){
-display.value=display.value.slice(0,-1);
-}
+let currentQuestion=0;
+let score=0;
 
-function calculate(){
+const question=document.getElementById("question");
+const answers=document.getElementById("answers");
+const nextBtn=document.getElementById("nextBtn");
+const result=document.getElementById("result");
 
-try{
+function showQuestion(){
 
-display.value=eval(display.value);
+resetState();
 
-}
+let current=questions[currentQuestion];
 
-catch{
+question.innerHTML=current.question;
 
-display.value="Error";
+current.answers.forEach(answer=>{
 
-}
+const button=document.createElement("button");
 
-}
+button.innerHTML=answer.text;
 
+button.classList.add("btn");
 
-document.addEventListener("keydown",function(event){
+answers.appendChild(button);
 
-let key=event.key;
+button.addEventListener("click",()=>selectAnswer(answer.correct,button));
 
-if(
-(key>='0' && key<='9') ||
-key=='+' ||
-key=='-' ||
-key=='*' ||
-key=='/' ||
-key=='.'
-){
-
-append(key);
+});
 
 }
 
-else if(key==="Enter"){
+function resetState(){
 
-calculate();
+nextBtn.style.display="none";
 
-}
-
-else if(key==="Backspace"){
-
-deleteLast();
+answers.innerHTML="";
 
 }
 
-else if(key==="Escape"){
+function selectAnswer(correct,button){
 
-clearDisplay();
+if(correct){
+
+button.classList.add("correct");
+
+score++;
+
+}
+
+else{
+
+button.classList.add("wrong");
+
+}
+
+nextBtn.style.display="block";
+
+}
+
+nextBtn.addEventListener("click",()=>{
+
+currentQuestion++;
+
+if(currentQuestion<questions.length){
+
+showQuestion();
+
+}
+else{
+
+showScore();
 
 }
 
 });
+
+function showScore(){
+
+question.innerHTML="Quiz Finished";
+
+answers.innerHTML="";
+
+result.innerHTML="Your Score: "+score+"/"+questions.length;
+
+nextBtn.style.display="none";
+
+}
+
+showQuestion();
